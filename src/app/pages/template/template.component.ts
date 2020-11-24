@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { PaisService } from '../../services/pais.service';
 
 @Component({
   selector: 'app-template',
@@ -8,29 +9,46 @@ import { NgForm } from '@angular/forms';
 })
 export class TemplateComponent implements OnInit {
 
+  paises: any[];
+
   usuario = {
     nombre: 'Enrique',
     apellido: 'Abramzon',
-    email: 'eabramzon@gmail.com'
+    email: 'eabramzon@gmail.com',
+    pais: ''
   };
 
-  constructor() { }
+  constructor( private paisService: PaisService ) { }
 
   ngOnInit(): void {
+
+    this.paisService.getPaises().subscribe( _paises => {
+      this.paises = _paises;
+
+      this.paises.unshift({
+        nombre: 'Seleccione un pais',
+        codigo: ''
+      });
+
+      // console.log( this.paises );
+
+    });
   }
 
-  guardar( formInfo: NgForm ): void {
-    console.log( formInfo.value );
+  guardar( form: NgForm ): void {
+    // console.log( form );
 
-    if ( formInfo.invalid ) {  // este if vuelve is-invalid si hay submit antes de tocar los campos del form
+    if ( form.invalid ) {  // este if vuelve is-invalid si hay submit antes de tocar los campos del form
 
-      Object.values( formInfo.controls ).forEach( control => {
+      Object.values( form.controls ).forEach( control => {
         control.markAsTouched();
       });
 
       return;
 
     }
+    console.log( form.value );
+
   }
 
 }
